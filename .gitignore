@@ -1,0 +1,71 @@
+# ========
+# Build output
+# ========
+/Debug/
+/Release/
+/build/
+/Build/
+
+# =======
+# Objective files
+# =======
+*.o
+*.obj
+*.elf
+*.map
+*.hex
+*.bin
+*.list
+*.lss
+*.d
+*.su
+
+# ======
+# Dependency & intermediate files
+# ======
+*.i
+*.a
+*.s
+
+# ======
+# STM32CubeIDE / Eclipse
+# ======
+.metadata/
+.settings/
+.cproject
+.project
+*.launch
+
+# ======
+# IDE specific
+# ======
+.vscode/
+.idea/
+*.code-workspace
+
+# ======
+# OS specific
+# ======
+.DS_Store
+Thumbs.db
+
+# ======
+# Logs
+# ======
+*.log
+
+# ======
+# Backup files
+# ======
+*~
+*.bak
+
+# ======
+# GCC / ARM toolchain
+# ======
+*.afx
+*.dep
+*.mk
+*.make
+*.cmake
+CMakeFiles/
