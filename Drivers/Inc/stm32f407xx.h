@@ -241,12 +241,16 @@ typedef struct{
 /*
  * Generic macros
  */
-#define ENABLE         1
-#define DISABLE        0
-#define SET            ENABLE
-#define RESET          DISABLE
-#define GPIO_PIN_SET   SET
-#define GPIO_PIN_RESET RESET
+#define HIGH            1
+#define LOW             0
+#define ENABLE          1
+#define DISABLE         0
+#define SET             ENABLE
+#define RESET           DISABLE
+#define GPIO_PIN_SET    SET
+#define GPIO_PIN_RESET  RESET
+#define BUTTON_PRESSED  0
+#define BUTTON_RELEASED 1
 
 
 #endif /* INC_STM32F407XX_H_ */

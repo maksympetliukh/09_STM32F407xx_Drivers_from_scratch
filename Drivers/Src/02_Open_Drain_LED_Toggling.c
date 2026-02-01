@@ -5,7 +5,7 @@
  *      Author: maksympetliukh
  */
 
-
+/*
 #include "stm32f407xx.h"
 
 void Delay(void){
@@ -38,3 +38,4 @@ int main(void){
 		Delay();
 	}
 }
+*/
