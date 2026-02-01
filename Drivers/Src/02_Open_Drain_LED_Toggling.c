@@ -1,15 +1,15 @@
 /*
- * 01_LED_Toggle.c
+ * 02_Open_Drain_LED_Toggling.c
  *
  *  Created on: Feb 1, 2026
  *      Author: maksympetliukh
  */
 
-/*
+
 #include "stm32f407xx.h"
 
 void Delay(void){
-	for(uint32_t i = 0; i < 600000; i++){
+	for(volatile uint32_t i = 0; i < 300000; i++){
 	}
 }
 
@@ -24,8 +24,8 @@ int main(void){
 	gpio_led.GPIOx_CFG.pin_number = GPIO_PIN_6;
 	gpio_led.GPIOx_CFG.pin_mode = GPIO_MODE_OUT;
 	gpio_led.GPIOx_CFG.pin_speed = GPIO_OSPEED_HIGH;
-	gpio_led.GPIOx_CFG.pin_op_type = GPIO_OUT_PP;
-	gpio_led.GPIOx_CFG.pin_pu_pd_ctrl = GPIO_NO_PUPD;
+	gpio_led.GPIOx_CFG.pin_op_type = GPIO_OUT_OPDRN;
+	gpio_led.GPIOx_CFG.pin_pu_pd_ctrl = GPIO_PIN_PU;
 
 	//Enable the GPIO peripheral clock
 	GPIO_ClockControl(GPIOA, ENABLE);
@@ -38,4 +38,3 @@ int main(void){
 		Delay();
 	}
 }
-*/
