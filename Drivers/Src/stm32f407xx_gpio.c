@@ -28,7 +28,34 @@ void GPIO_Init(GPIO_Handle_t *pGPIO_Handle){
 
 		pGPIO_Handle->pGPIOx->MODER &= ~(0x3 << pGPIO_Handle->GPIOx_CFG.pin_number);//clearing
 		pGPIO_Handle->pGPIOx->MODER |= tmp;//setting
-	}else{} //Interrupt mode (will be filled later)
+	}else{
+		if(pGPIO_Handle->GPIOx_CFG.pin_mode == GPIO_MODE_IT_FT){
+			//Configure the FTSR
+			EXTI->FTSR |= (1 << pGPIO_Handle->GPIOx_CFG.pin_number);
+
+			//Clear the RTSR bit
+			EXTI->RTSR &= ~(1 << pGPIO_Handle->GPIOx_CFG.pin_number);
+
+		}else if(pGPIO_Handle->GPIOx_CFG.pin_mode == GPIO_MODE_IT_RT){
+			//Configure the RTSR
+			EXTI->RTSR |= (1 << pGPIO_Handle->GPIOx_CFG.pin_number);
+
+			//Clear the FTSR bit
+			EXTI->FTSR &= ~(1 << pGPIO_Handle->GPIOx_CFG.pin_number);
+
+		}else if(pGPIO_Handle->GPIOx_CFG.pin_mode == GPIO_MODE_IT_RFT){
+			//Configure both FTSR and RTSR
+			EXTI->FTSR |= (1 << pGPIO_Handle->GPIOx_CFG.pin_number);
+			EXTI->RTSR |= (1 << pGPIO_Handle->GPIOx_CFG.pin_number);
+		}
+
+		//Configure the GPIO port selection in EXTICR
+		RCC_SYSCFG_CLK_ENABLE();
+
+
+		//Enable the EXTI interrupt delivery using IMR
+		EXTI->IMR |= (1 << pGPIO_Handle->GPIOx_CFG,pin_number);
+	}
 
 	tmp = 0;
 	//GPIO pin output speed configuration

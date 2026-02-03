@@ -8,7 +8,7 @@
 #include "stm32f407xx.h"
 
 void Delay(void){
-	for(volatile uint32_t i = 0; i < 500000; i++){
+	for(volatile uint32_t i = 0; i < 250000; i++){
 	}
 }
 
@@ -38,9 +38,8 @@ int main(void){
 	GPIO_Init(&gpio_button);
 
 	while(1){
-		if(GPIO_ReadPin(GPIOE, GPIO_PIN_3) == BUTTON_PRESSED){
-            Delay();
-
+		if(GPIO_ReadPin(GPIOE, GPIO_PIN_3) == 0){
+			Delay();
 			GPIO_TogglePin(GPIOA, GPIO_PIN_7);
 		}
 	}

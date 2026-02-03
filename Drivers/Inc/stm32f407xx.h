@@ -20,7 +20,7 @@
 #define SRAM1_BASE 0x20000000UL /*112 KB SRAM1*/
 #define SRAM2_BASE 0x2001C000UL /*16  KB SRAM2*/
 #define ROM_BASE   FLASH_BASE   /*Alias*/
-#define SRAM_BASE       SRAM1_BASE   /*General SRAM*/
+#define SRAM_BASE  SRAM1_BASE   /*General SRAM*/
 
 /*
  * AHBx and APBx bus peripheral base addresses
@@ -65,7 +65,7 @@
 #define USART1_BASE  0x40011000UL /*USART1*/
 #define USART6_BASE  0x40011400UL /*USART6*/
 #define EXTI_BASE    0x40013C00UL /*EXTI*/
-#define SYSCFG_BASE 0x40013800UL /*SYSCFG*/
+#define SYSCFG_BASE 0x40013800UL  /*SYSCFG*/
 
 /*
  * Peripheral register structure for GPIO
@@ -76,7 +76,7 @@ typedef struct{
 	uint32_t volatile OSPEEDR; /*GPIO port output speed register                offset: 0x08*/
 	uint32_t volatile PUPDR;   /*GPIO port pull-up/pull-down register           offset: 0x0C*/
 	uint32_t volatile IDR;     /*GPIO port input data register                  offset: 0x10*/
-	uint32_t volatile ODR;     /*GPIO port output data register         		   offset: 0x14*/
+	uint32_t volatile ODR;     /*GPIO port output data register         		offset: 0x14*/
 	uint32_t volatile BSRR;    /*GPIO port bit set/reset register               offset: 0x18*/
 	uint32_t volatile LCKR;    /*GPIO port configuration lock register          offset: 0x1C*/
 	uint32_t volatile AFRL;    /*GPIO port alternative function low register    offset: 0x20*/
@@ -234,9 +234,41 @@ typedef struct{
 #define RCC_SYSCFG_CLK_ENABLE()  ((RCC->APB2ENR) |= (1 << 14))
 
 /*
+ * SYSCFG peripheral register structure
+ */
+typedef struct{
+	uint32_t volatile MEMRMP;  /*Memory remap register                           offset: 0x00*/
+	uint32_t volatile PMC;     /*Peripheral mode configuration register          offset: 0x04*/
+	uint32_t volatile EXTICR1; /*External interrupt configuration register 1     offset: 0x08*/
+	uint32_t volatile EXTICR2; /*External interrupt configuration register 2     offset: 0x0C*/
+	uint32_t volatile EXTICR3; /*External interrupt configuration register 3     offset: 0x10*/
+	uint32_t volatile EXTICR4; /*External interrupt configuration register 4     offset: 0x14*/
+	uint32_t RESERVED1;        /*Reserved register                               offset: 0x18*/
+	uint32_t RESERVED2;        /*Reserved register                               offset: 0x1C*/
+	uint32_t volatile CMPCR;   /*Compensation cell control register              offset: 0x20*/
+	uint32_t RESERVED3;        /*Reserved register                               offset: 0x24*/
+	uint32_t RESERVED4;        /*Reserved register                               offset: 0x28*/
+	uint32_t volatile CFGR;    /*Configuration register                          offset: 0x2C*/
+}SYSCFG_REG_t;
+/*
  * Clock disable macro for SYSCFG peripheral
  */
 #define RCC_SYSCFG_CLK_DISABLE()  ((RCC->APB2ENR) &= ~(1 << 14))
+
+/*
+ * EXTI peripheral registers structure
+ */
+
+typedef struct{
+	uint32_t volatile IMR;   /*Interrupt mask register                    offset: 0x00*/
+	uint32_t volatile EMR;   /*Event mask register                        offset: 0x04*/
+	uint32_t volatile RTSR;  /*Rising trigger selection register          offset: 0x08*/
+	uint32_t volatile FTSR;  /*Falling trigger selection register         offset: 0x0C*/
+	uint32_t volatile SWIER; /*Software interrupt event register          offset: 0x10*/
+	uint32_t volatile PR;    /*Pending register                           offset: 0x14*/
+}EXTI_REG_t;
+
+#define EXTI ((EXTI_REG_t*)EXTI_BASE)
 
 /*
  * Generic macros
@@ -247,10 +279,8 @@ typedef struct{
 #define DISABLE         0
 #define SET             ENABLE
 #define RESET           DISABLE
-#define GPIO_PIN_SET    SET
-#define GPIO_PIN_RESET  RESET
-#define BUTTON_PRESSED  0
-#define BUTTON_RELEASED 1
+#define PRESSED         0
+#define RELEASED        1
 
 
 #endif /* INC_STM32F407XX_H_ */
