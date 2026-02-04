@@ -23,6 +23,139 @@
 #define SRAM_BASE  SRAM1_BASE   /*General SRAM*/
 
 /*
+ * ARM Cortex-M4 processor NVIC ISERx register addresses
+ */
+#define NVIC_ISER0 ((volatile uint32_t*)0xE000E100)
+#define NVIC_ISER1 ((volatile uint32_t*)0xE000E104)
+#define NVIC_ISER2 ((volatile uint32_t*)0xE000E108)
+#define NVIC_ISER3 ((volatile uint32_t*)0xE000E10C)   /*Interrupt Set Enable Registers 0-7*/
+#define NVIC_ISER4 ((volatile uint32_t*)0xE000E110)
+#define NVIC_ISER5 ((volatile uint32_t*)0xE000E114)
+#define NVIC_ISER6 ((volatile uint32_t*)0xE000E118)
+#define NVIC_ISER7 ((volatile uint32_t*)0xE000E11C)
+
+/*
+ * ARM Cortex-M4 processor NVIC ICERx register addresses
+ */
+#define NVIC_ICER0 ((volatile uint32_t*)0xE000E180)
+#define NVIC_ICER1 ((volatile uint32_t*)0xE000E184)
+#define NVIC_ICER2 ((volatile uint32_t*)0xE000E188)
+#define NVIC_ICER3 ((volatile uint32_t*)0xE000E18C)   /*Interrupt Clear Enable Registers 0-7*/
+#define NVIC_ICER4 ((volatile uint32_t*)0xE000E190)
+#define NVIC_ICER5 ((volatile uint32_t*)0xE000E194)
+#define NVIC_ICER6 ((volatile uint32_t*)0xE000E198)
+#define NVIC_ICER7 ((volatile uint32_t*)0xE000E19C)
+
+/*
+ * ARM Cortex-M4 processor NVIC ISPR register addresses
+ */
+#define NVIC_ISPR0 ((volatile uint32_t*)0xE000E200)
+#define NVIC_ISPR1 ((volatile uint32_t*)0xE000E204)
+#define NVIC_ISPR2 ((volatile uint32_t*)0xE000E208)
+#define NVIC_ISPR3 ((volatile uint32_t*)0xE000E20C)  /*Interrupt set pending registers*/
+#define NVIC_ISPR4 ((volatile uint32_t*)0xE000E210)
+#define NVIC_ISPR5 ((volatile uint32_t*)0xE000E214)
+#define NVIC_ISPR6 ((volatile uint32_t*)0xE000E218)
+#define NVIC_ISPR7 ((volatile uint32_t*)0xE000E21C)
+
+/*
+ * ARM Cortex-M4 processor NVIC ICPR register addresses
+ */
+#define NVIC_ICPR0 ((volatile uint32_t*)0xE000E280)
+#define NVIC_ICPR1 ((volatile uint32_t*)0xE000E284)
+#define NVIC_ICPR2 ((volatile uint32_t*)0xE000E288)
+#define NVIC_ICPR3 ((volatile uint32_t*)0xE000E28C)  /*Interrupt clear pending registers 0-7*/
+#define NVIC_ICPR4 ((volatile uint32_t*)0xE000E290)
+#define NVIC_ICPR5 ((volatile uint32_t*)0xE000E294)
+#define NVIC_ICPR6 ((volatile uint32_t*)0xE000E298)
+#define NVIC_ICPR7 ((volatile uint32_t*)0xE000E29C)
+
+/*
+ * ARM Cortex-M4 processor NVIC IABR register addresses
+ */
+#define NVIC_IABR0 ((volatile uint32_t*)0xE000E300
+#define NVIC_IABR1 ((volatile uint32_t*)0xE000E304)
+#define NVIC_IABR2 ((volatile uint32_t*)0xE000E308)
+#define NVIC_IABR3 ((volatile uint32_t*)0xE000E30C)    /*Interrupt Active Bit registers 0-7*/
+#define NVIC_IABR4 ((volatile uint32_t*)0xE000E310)
+#define NVIC_IABR5 ((volatile uint32_t*)0xE000E314)
+#define NVIC_IABR6 ((volatile uint32_t*)0xE000E318)
+#define NVIC_IABR7 ((volatile uint32_t*)0xE000E31C)
+
+/*
+ * ARM Cortex-M4 processor NVIC IPR register addresses
+ */
+#define NVIC_IPR0   ((volatile uint32_t*)0xE000E400)  /*Interrupt Priority Registers 0-58*/
+#define NVIC_IPR1   ((volatile uint32_t*)0xE000E404)
+#define NVIC_IPR2   ((volatile uint32_t*)0xE000E408)
+#define NVIC_IPR3   ((volatile uint32_t*)0xE000E40C)
+#define NVIC_IPR4   ((volatile uint32_t*)0xE000E410)
+#define NVIC_IPR5   ((volatile uint32_t*)0xE000E414)
+#define NVIC_IPR6   ((volatile uint32_t*)0xE000E418)
+#define NVIC_IPR7   ((volatile uint32_t*)0xE000E41C)
+#define NVIC_IPR8   ((volatile uint32_t*)0xE000E420)
+#define NVIC_IPR9   ((volatile uint32_t*)0xE000E424)
+#define NVIC_IPR10  ((volatile uint32_t*)0xE000E428)
+#define NVIC_IPR11  ((volatile uint32_t*)0xE000E42C)
+#define NVIC_IPR12  ((volatile uint32_t*)0xE000E430)
+#define NVIC_IPR13  ((volatile uint32_t*)0xE000E434)
+#define NVIC_IPR14  ((volatile uint32_t*)0xE000E438)
+#define NVIC_IPR15  ((volatile uint32_t*)0xE000E43C)
+#define NVIC_IPR16  ((volatile uint32_t*)0xE000E440)
+#define NVIC_IPR17  ((volatile uint32_t*)0xE000E444)
+#define NVIC_IPR18  ((volatile uint32_t*)0xE000E448)
+#define NVIC_IPR19  ((volatile uint32_t*)0xE000E44C)
+#define NVIC_IPR20  ((volatile uint32_t*)0xE000E450)
+#define NVIC_IPR21  ((volatile uint32_t*)0xE000E454)
+#define NVIC_IPR22  ((volatile uint32_t*)0xE000E458)
+#define NVIC_IPR23  ((volatile uint32_t*)0xE000E45C)
+#define NVIC_IPR24  ((volatile uint32_t*)0xE000E460)
+#define NVIC_IPR25  ((volatile uint32_t*)0xE000E464)
+#define NVIC_IPR26  ((volatile uint32_t*)0xE000E468)
+#define NVIC_IPR27  ((volatile uint32_t*)0xE000E46C)
+#define NVIC_IPR28  ((volatile uint32_t*)0xE000E470)
+#define NVIC_IPR29  ((volatile uint32_t*)0xE000E474)
+#define NVIC_IPR30  ((volatile uint32_t*)0xE000E478)
+#define NVIC_IPR31  ((volatile uint32_t*)0xE000E47C)
+#define NVIC_IPR32  ((volatile uint32_t*)0xE000E480)
+#define NVIC_IPR33  ((volatile uint32_t*)0xE000E484)
+#define NVIC_IPR34  ((volatile uint32_t*)0xE000E488)
+#define NVIC_IPR35  ((volatile uint32_t*)0xE000E48C)
+#define NVIC_IPR36  ((volatile uint32_t*)0xE000E490)
+#define NVIC_IPR37  ((volatile uint32_t*)0xE000E494)
+#define NVIC_IPR38  ((volatile uint32_t*)0xE000E498)
+#define NVIC_IPR39  ((volatile uint32_t*)0xE000E49C)
+#define NVIC_IPR40  ((volatile uint32_t*)0xE000E4A0)
+#define NVIC_IPR41  ((volatile uint32_t*)0xE000E4A4)
+#define NVIC_IPR42  ((volatile uint32_t*)0xE000E4A8)
+#define NVIC_IPR43  ((volatile uint32_t*)0xE000E4AC)
+#define NVIC_IPR44  ((volatile uint32_t*)0xE000E4B0)
+#define NVIC_IPR45  ((volatile uint32_t*)0xE000E4B4)
+#define NVIC_IPR46  ((volatile uint32_t*)0xE000E4B8)
+#define NVIC_IPR47  ((volatile uint32_t*)0xE000E4BC)
+#define NVIC_IPR48  ((volatile uint32_t*)0xE000E4C0)
+#define NVIC_IPR49  ((volatile uint32_t*)0xE000E4C4)
+#define NVIC_IPR50  ((volatile uint32_t*)0xE000E4C8)
+#define NVIC_IPR51  ((volatile uint32_t*)0xE000E4CC)
+#define NVIC_IPR52  ((volatile uint32_t*)0xE000E4D0)
+#define NVIC_IPR53  ((volatile uint32_t*)0xE000E4D4)
+#define NVIC_IPR54  ((volatile uint32_t*)0xE000E4D8)
+#define NVIC_IPR55  ((volatile uint32_t*)0xE000E4DC)
+#define NVIC_IPR56  ((volatile uint32_t*)0xE000E4E0)
+#define NVIC_IPR57  ((volatile uint32_t*)0xE000E4E4)
+#define NVIC_IPR58  ((volatile uint32_t*)0xE000E4E8)
+#define NVIC_IPR59  ((volatile uint32_t*)0xE000E4EC)
+
+/*
+ * ARM Cortex-M4 processor STIR register address
+ */
+#define NVIC_STIR   ((volatile uint32_t*)0xE000EF00) /*Software Trigger Interrupt Register*/
+
+/*
+ * ARM Cortex-M4 number of implemented priority bits
+ */
+#define PRIOR_BITS_IMPLEMENTED 4
+/*
  * AHBx and APBx bus peripheral base addresses
  */
 #define PERIPH_BASE     0x40000000UL
@@ -155,6 +288,20 @@ typedef struct{
 #define GPIOI_REG_RESET() do{(RCC->AHB1RSTR |= (1 << 8)); (RCC->AHB1RSTR &= ~(1 << 8));}while(0)
 
 /*
+ * This macro returns GPIO port code for given GPIO pin address
+ */
+#define GPIO_BASE_TO_CODE(x) ((x) == GPIOA) ? 0 :\
+		                     ((x) == GPIOB) ? 1 :\
+		                     ((x) == GPIOC) ? 2 :\
+		                     ((x) == GPIOD) ? 3 :\
+		                     ((x) == GPIOE) ? 4 :\
+		                     ((x) == GPIOF) ? 5 :\
+		                     ((x) == GPIOG) ? 6 :\
+		                     ((x) == GPIOH) ? 7 :\
+		                     ((x) == GPIOI) ? 8 :\
+		                     0 \
+
+/*
  * Clock enable macro for GPIOx peripherals
  */
 #define RCC_GPIOA_CLK_ENABLE()   ((RCC->AHB1ENR) |= (1 << 0))
@@ -234,15 +381,17 @@ typedef struct{
 #define RCC_SYSCFG_CLK_ENABLE()  ((RCC->APB2ENR) |= (1 << 14))
 
 /*
+ * Clock disable macro for SYSCFG peripheral
+ */
+#define RCC_SYSCFG_CLK_DISABLE()  ((RCC->APB2ENR) &= ~(1 << 14))
+
+/*
  * SYSCFG peripheral register structure
  */
 typedef struct{
 	uint32_t volatile MEMRMP;  /*Memory remap register                           offset: 0x00*/
 	uint32_t volatile PMC;     /*Peripheral mode configuration register          offset: 0x04*/
-	uint32_t volatile EXTICR1; /*External interrupt configuration register 1     offset: 0x08*/
-	uint32_t volatile EXTICR2; /*External interrupt configuration register 2     offset: 0x0C*/
-	uint32_t volatile EXTICR3; /*External interrupt configuration register 3     offset: 0x10*/
-	uint32_t volatile EXTICR4; /*External interrupt configuration register 4     offset: 0x14*/
+	uint32_t volatile EXTICR[4]; /*External interrupt configuration register 1     offset: 0x08-0x14*/
 	uint32_t RESERVED1;        /*Reserved register                               offset: 0x18*/
 	uint32_t RESERVED2;        /*Reserved register                               offset: 0x1C*/
 	uint32_t volatile CMPCR;   /*Compensation cell control register              offset: 0x20*/
@@ -250,15 +399,12 @@ typedef struct{
 	uint32_t RESERVED4;        /*Reserved register                               offset: 0x28*/
 	uint32_t volatile CFGR;    /*Configuration register                          offset: 0x2C*/
 }SYSCFG_REG_t;
-/*
- * Clock disable macro for SYSCFG peripheral
- */
-#define RCC_SYSCFG_CLK_DISABLE()  ((RCC->APB2ENR) &= ~(1 << 14))
+
+#define SYSCFG  ((SYSCFG_REG_t*)SYSCFG_BASE)
 
 /*
  * EXTI peripheral registers structure
  */
-
 typedef struct{
 	uint32_t volatile IMR;   /*Interrupt mask register                    offset: 0x00*/
 	uint32_t volatile EMR;   /*Event mask register                        offset: 0x04*/
@@ -270,6 +416,21 @@ typedef struct{
 
 #define EXTI ((EXTI_REG_t*)EXTI_BASE)
 
+/*
+ * Interrupt Request (IRQ) numbers of STM32F407xx MCU
+ */
+#define IRQ_NO_EXTI0       6
+#define IRQ_NO_EXTI1       7
+#define IRQ_NO_EXTI2       8
+#define IRQ_NO_EXTI3       9
+#define IRQ_NO_EXTI4       10
+#define IRQ_NO_EXTI5_9     23
+#define IRQ_NO_EXTI10_15   40
+
+/*
+ * ARM Cortex-M4 CPU Priority Register base address
+ */
+#define NVIC_IRQ_PRIOR_BASE ((volatile uint32_t*)0xE000E400)
 /*
  * Generic macros
  */

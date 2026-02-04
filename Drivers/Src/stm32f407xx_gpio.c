@@ -52,9 +52,14 @@ void GPIO_Init(GPIO_Handle_t *pGPIO_Handle){
 		//Configure the GPIO port selection in EXTICR
 		RCC_SYSCFG_CLK_ENABLE();
 
+		uint8_t tmp1 = pGPIO_Handle->GPIOx_CFG.pin_number / 4;
+		uint8_t tmp2 = pGPIO_Handle->GPIOx_CFG.pin_number % 4;
+		uint8_t portcode = GPIO_BASE_TO_CODE(pGPIO_Handle->pGPIOx);
+
+		SYSCFG->EXTICR[tmp1] = portcode << (tmp2 * 4);
 
 		//Enable the EXTI interrupt delivery using IMR
-		EXTI->IMR |= (1 << pGPIO_Handle->GPIOx_CFG,pin_number);
+		EXTI->IMR |= (1 << pGPIO_Handle->GPIOx_CFG.pin_number);
 	}
 
 	tmp = 0;
@@ -239,7 +244,7 @@ uint16_t GPIO_ReadPort(GPIO_REG_t *pGPIOx){
  * @note          - none
  */
 void GPIO_WritePin(GPIO_REG_t *pGPIOx, uint8_t PinNumber, uint8_t value){
-	if(value == GPIO_PIN_SET){
+	if(value == SET){
 		//write 1 to the ODR at the bit field corresponding to the pin number
 		pGPIOx->ODR |= (1 << PinNumber);
 	}else{
@@ -286,11 +291,55 @@ void GPIO_TogglePin(GPIO_REG_t *pGPIOx, uint8_t PinNumber){
  * @brief         - This function allows to set interruption request parameters (Interruption Request priority, IRQ enable/disable mode).
  *
  * @param[in]     - number of the IRQ.
- * @param[in]     - IRQ priority type.
  * @param[in]     - IRQ enable/disable mode.
  */
-void GPIO_IRQ_Config(uint8_t IRQ_Number, uint8_t IRQ_Priority, uint8_t EnDiMode);
+void GPIO_IRQ_Interrupt_CFG(uint8_t IRQ_Number, uint8_t EnDiMode){
+	if(EnDiMode == ENABLE){
+		if(IRQ_Number <= 31){
+			//program the ISER0 register
+			*NVIC_ISER0 |= (1 << IRQ_Number);
 
+		}else if(IRQ_Number > 31 && IRQ_Number < 64){
+			//program the ISER1 register
+			*NVIC_ISER1 |= (1 << (IRQ_Number % 32));
+
+		}else if(IRQ_Number > 64 && IRQ_Number < 96){
+			//program the ISER2 register
+			*NVIC_ISER3 |= (1 << (IRQ_Number % 64));
+		}
+	}else{
+		if(IRQ_Number <= 31){
+			//program the ICER0 register
+			*NVIC_ICER0 |= (1 << IRQ_Number);
+		}else if(IRQ_Number > 31 && IRQ_Number < 64){
+			//program the ICER1 register
+			*NVIC_ICER1 |= (1 << (IRQ_Number % 32));
+		}else if(IRQ_Number > 64 && IRQ_Number < 96){
+			//program the ICER2 register
+			*NVIC_ICER3 |= (1 << (IRQ_Number % 64));
+		}
+	}
+}
+/************************************************************
+ * @fn            - GPIO_IRQ_Priority_CFG
+ *
+ * @brief         - This function sets the IRQ priority.
+ *
+ * @param[in]     - IRQ number.
+ * @param[in]     - IRQ priority number.
+ *
+ * @return        - none
+ *
+ * @note          - none
+ */
+void GPIO_IRQ_Priority_CFG(uint8_t IRQ_Number, uint8_t IRQ_Priority){
+	//Find out the IPR register
+	uint8_t iprx = IRQ_Number / 4;
+	uint8_t iprx_section = IRQ_Number % 4;
+	uint8_t shift_amount = (8 * iprx_section) + (8 - PRIOR_BITS_IMPLEMENTED);
+
+	*(NVIC_IRQ_PRIOR_BASE + (iprx * 4)) |= (IRQ_Priority << shift_amount);
+}
 /************************************************************
  * @fn            - GPIO_IRQ_Handler
  *
@@ -302,6 +351,12 @@ void GPIO_IRQ_Config(uint8_t IRQ_Number, uint8_t IRQ_Priority, uint8_t EnDiMode)
  *
  * @note          - none
  */
-void GPIO_IRQ_Handler(uint8_t PinNumber);
+void GPIO_IRQ_Handler(uint8_t PinNumber){
+	//Clear the EXTI PR register corresponding to the pin number
+	if(EXTI->PR & (1 << PinNumber)){
+		//Clear that PR bit
+		EXTI->PR |= (1 << PinNumber);
+	}
+}
 
 
