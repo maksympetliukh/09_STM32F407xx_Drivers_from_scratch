@@ -56,7 +56,8 @@ void GPIO_Init(GPIO_Handle_t *pGPIO_Handle){
 		uint8_t tmp2 = pGPIO_Handle->GPIOx_CFG.pin_number % 4;
 		uint8_t portcode = GPIO_BASE_TO_CODE(pGPIO_Handle->pGPIOx);
 
-		SYSCFG->EXTICR[tmp1] = portcode << (tmp2 * 4);
+		SYSCFG->EXTICR[tmp1] &= ~(0xF << (tmp2 * 4));
+		SYSCFG->EXTICR[tmp1] |= (portcode << (tmp2 * 4));
 
 		//Enable the EXTI interrupt delivery using IMR
 		EXTI->IMR |= (1 << pGPIO_Handle->GPIOx_CFG.pin_number);
@@ -305,7 +306,7 @@ void GPIO_IRQ_Interrupt_CFG(uint8_t IRQ_Number, uint8_t EnDiMode){
 
 		}else if(IRQ_Number > 64 && IRQ_Number < 96){
 			//program the ISER2 register
-			*NVIC_ISER3 |= (1 << (IRQ_Number % 64));
+			*NVIC_ISER2 |= (1 << (IRQ_Number % 64));
 		}
 	}else{
 		if(IRQ_Number <= 31){
@@ -316,7 +317,7 @@ void GPIO_IRQ_Interrupt_CFG(uint8_t IRQ_Number, uint8_t EnDiMode){
 			*NVIC_ICER1 |= (1 << (IRQ_Number % 32));
 		}else if(IRQ_Number > 64 && IRQ_Number < 96){
 			//program the ICER2 register
-			*NVIC_ICER3 |= (1 << (IRQ_Number % 64));
+			*NVIC_ICER2 |= (1 << (IRQ_Number % 64));
 		}
 	}
 }
@@ -333,12 +334,14 @@ void GPIO_IRQ_Interrupt_CFG(uint8_t IRQ_Number, uint8_t EnDiMode){
  * @note          - none
  */
 void GPIO_IRQ_Priority_CFG(uint8_t IRQ_Number, uint8_t IRQ_Priority){
+	if(IRQ_Priority > 15)IRQ_Priority = 15;
 	//Find out the IPR register
-	uint8_t iprx = IRQ_Number / 4;
-	uint8_t iprx_section = IRQ_Number % 4;
-	uint8_t shift_amount = (8 * iprx_section) + (8 - PRIOR_BITS_IMPLEMENTED);
+	uint8_t reg_index = IRQ_Number / 4;
+	uint8_t offset = IRQ_Number % 4;
+	uint8_t shift_amount = (8 * offset) + (8 - PRIOR_BITS_IMPLEMENTED);
 
-	*(NVIC_IRQ_PRIOR_BASE + (iprx * 4)) |= (IRQ_Priority << shift_amount);
+	*(NVIC_IRQ_PRIOR_BASE + (reg_index * 4)) &= ~(0xFFUL + (offset * 8));
+	*(NVIC_IRQ_PRIOR_BASE + (reg_index * 4)) |= (IRQ_Priority << shift_amount);
 }
 /************************************************************
  * @fn            - GPIO_IRQ_Handler

@@ -5,6 +5,7 @@
  *      Author: maksympetliukh
  */
 
+/*
 #include "stm32f407xx.h"
 
 void Delay(void){
@@ -45,4 +46,4 @@ int main(void){
 	}
 
 	return EXIT_SUCCESS;
-}
+}*/

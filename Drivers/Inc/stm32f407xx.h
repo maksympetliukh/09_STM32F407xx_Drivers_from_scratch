@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "stm32f407xx_gpio.h"
 
 #ifndef INC_STM32F407XX_H_
@@ -85,7 +86,7 @@
 /*
  * ARM Cortex-M4 processor NVIC IPR register addresses
  */
-#define NVIC_IPR0   ((volatile uint32_t*)0xE000E400)  /*Interrupt Priority Registers 0-58*/
+#define NVIC_IPR0   ((volatile uint32_t*)0xE000E400) /*Interrupt Priority Registers 0-58*/
 #define NVIC_IPR1   ((volatile uint32_t*)0xE000E404)
 #define NVIC_IPR2   ((volatile uint32_t*)0xE000E408)
 #define NVIC_IPR3   ((volatile uint32_t*)0xE000E40C)
@@ -419,13 +420,13 @@ typedef struct{
 /*
  * Interrupt Request (IRQ) numbers of STM32F407xx MCU
  */
-#define IRQ_NO_EXTI0       6
-#define IRQ_NO_EXTI1       7
-#define IRQ_NO_EXTI2       8
-#define IRQ_NO_EXTI3       9
-#define IRQ_NO_EXTI4       10
-#define IRQ_NO_EXTI5_9     23
-#define IRQ_NO_EXTI10_15   40
+#define IRQ_EXTI0       6
+#define IRQ_EXTI1       7
+#define IRQ_EXTI2       8
+#define IRQ_EXTI3       9
+#define IRQ_EXTI4       10
+#define IRQ_EXTI5_9     23
+#define IRQ_EXTI10_15   40
 
 /*
  * ARM Cortex-M4 CPU Priority Register base address
@@ -438,8 +439,8 @@ typedef struct{
 #define LOW             0
 #define ENABLE          1
 #define DISABLE         0
-#define SET             ENABLE
-#define RESET           DISABLE
+#define SET             1
+#define RESET           0
 #define PRESSED         0
 #define RELEASED        1
 
