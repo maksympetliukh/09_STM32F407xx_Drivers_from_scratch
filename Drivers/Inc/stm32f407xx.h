@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "stm32f407xx_gpio.h"
+#include "stm32f407xx_spi.h"
 
 #ifndef INC_STM32F407XX_H_
 #define INC_STM32F407XX_H_
@@ -187,6 +188,7 @@
 #define I2C3_BASE   0x40005C00UL /*I2C3*/
 #define SPI2_BASE   0x40003800UL /*SPI2/I2S2*/
 #define SPI3_BASE   0x40003C00UL /*SPI3/I2S3*/
+#define SPI4_BASE   0x40013400UL /*SPI4*/
 #define USART2_BASE 0x40004400UL /*USART2*/
 #define USART3_BASE 0x40004800UL /*USART3*/
 #define UART4_BASE  0x40004C00UL /*UART4*/
@@ -347,14 +349,16 @@ typedef struct{
  */
 #define RCC_SPI1_CLK_ENABLE()      ((RCC->APB2ENR) |= (1 << 12))
 #define RCC_SPI2_CLK_ENABLE()      ((RCC->APB1ENR) |= (1 << 14))
-#define RCC_SPI3_CLK_ENABLE()      ((RCC->APB2ENR) |= (1 << 15))
+#define RCC_SPI3_CLK_ENABLE()      ((RCC->APB1ENR) |= (1 << 15))
+#define RCC_SPI4_CLK_ENABLE()      ((RCC->APB2ENR) |= (1 << 13))
 
 /*
  * Clock disable macro for SPIx peripherals
  */
-#define RCC_SPI1_CLK_DISABLE      ((RCC->APB2ENR) &= ~(1 << 12))
-#define RCC_SPI2_CLK_DISABLE      ((RCC->APB1ENR) &= ~(1 << 14))
-#define RCC_SPI3_CLK_DISABLE      ((RCC->APB2ENR) &= ~(1 << 15))
+#define RCC_SPI1_CLK_DISABLE()      ((RCC->APB2ENR) &= ~(1 << 12))
+#define RCC_SPI2_CLK_DISABLE()      ((RCC->APB1ENR) &= ~(1 << 14))
+#define RCC_SPI3_CLK_DISABLE()      ((RCC->APB1ENR) &= ~(1 << 15))
+#define RCC_SPI4_CLK_DISABLE()      ((RCC->APB2ENR) &= ~(1 << 13))
 
 /*
  * Clock enable macro for UART/USARTx peripherals
@@ -432,6 +436,97 @@ typedef struct{
  * ARM Cortex-M4 CPU Priority Register base address
  */
 #define NVIC_IRQ_PRIOR_BASE ((volatile uint32_t*)0xE000E400)
+
+/*
+ * SPI peripheral register structure
+ */
+typedef struct{
+	uint32_t volatile CR1;          /*SPI Control Register 1                   offset: 0x00*/
+	uint32_t volatile CR2;          /*SPI Control Register 2                   offset: 0x04*/
+	uint32_t volatile SR;           /*SPI Status Register                      offset: 0x08*/
+	uint32_t volatile DR;           /*SPI Data Register                        offset: 0x0C*/
+	uint32_t volatile CRCPR;        /*CPI CRC polynomial Register              offset: 0x10*/
+	uint32_t volatile RXCRCR;       /*SPI RX CRC Register                      offset: 0x14*/
+	uint32_t volatile TXCRCR;       /*SPI TX CRC Register                      offset: 0x18*/
+	uint32_t volatile I2SCFGR;      /*SPI I2C Configuration Register           offset: 0x1C*/
+	uint32_t volatile I2SPR;        /*SPI I2S Prescaler Register               offset: 0x20*/
+}SPI_REG_t;
+
+/*
+ * SPI Peripheral Definitions
+ */
+#define SPI1 ((SPI_REG_t*)SPI1_BASE)
+#define SPI2 ((SPI_REG_t*)SPI2_BASE)
+#define SPI3 ((SPI_REG_t*)SPI3_BASE)
+#define SPI4 ((SPI_REG_t*)SPI4_BASE)
+
+/*
+ * Macros to reset SPIx peripherals
+ */
+#define SPI1_REG_RESET() do{(RCC->APB2RSTR |= (1 << 12)); (RCC->APB2RSTR &= ~(1 << 12));}while(0)
+#define SPI2_REG_RESET() do{(RCC->APB1RSTR |= (1 << 14)); (RCC->APB2RSTR &= ~(1 << 14));}while(0)
+#define SPI3_REG_RESET() do{(RCC->APB1RSTR |= (1 << 15)); (RCC->APB2RSTR &= ~(1 << 15));}while(0)
+#define SPI4_REG_RESET() do{(RCC->APB2RSTR |= (1 << 13)); (RCC->APB2RSTR &= ~(1 << 13));}while(0)
+
+/*
+ * SPI CR1 peripheral bit position definition macros
+ */
+#define SPI_CR1_CPHA      0
+#define SPI_CR1_CPOL      1
+#define SPI_CR1_MSTR      2
+#define SPI_CR1_BR        3
+#define SPI_CR1_SPE       6
+#define SPI_CR1_LSBF      7
+#define SPI_CR1_SSI       8
+#define SPI_CR1_SSM       9
+#define SPI_CR1_RXONLY    10
+#define SPI_CR1_DFF       11
+#define SPI_CR1_CRCNEXT   12
+#define SPI_CR1_CRCEN     13
+#define SPI_CR1_BIDIOE    14
+#define SPI_CR1_BIDIMODE  15
+
+/*
+ * SPI CR2 peripheral bit position definition macros
+ */
+#define SPI_CR2_RXDMAEN    0
+#define SPI_CR2_TXDMAEN    1
+#define SPI_CR2_SSOE       2
+#define SPI_CR2_RESERVED   3
+#define SPI_CR2_FRF        4
+#define SPI_CR2_ERRIE      5
+#define SPI_CR2_RXNEIE     6
+#define SPI_CR2_TXEIE      7
+
+
+/*
+ * SPI SR peripheral bit position definition macros
+ */
+#define SPI_SR_RXNE      0
+#define SPI_SR_TXE       1
+#define SPI_SR_CHSIDE    2
+#define SPI_SR_UDR       3
+#define SPI_SR_CRCERR    4
+#define SPI_SR_MODF      5
+#define SPI_SR_OVR       6
+#define SPI_SR_BSY       7
+#define SPI_SR_FRE       8
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
  * Generic macros
  */
@@ -443,6 +538,5 @@ typedef struct{
 #define RESET           0
 #define PRESSED         0
 #define RELEASED        1
-
 
 #endif /* INC_STM32F407XX_H_ */
