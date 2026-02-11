@@ -9,6 +9,7 @@
 #define INC_STM32F407XX_SPI_H_
 
 #include "stm32f407xx.h"
+
 /*
  * Configuration structure for SPIx peripheral
  */
@@ -79,15 +80,40 @@ typedef struct{
 	SPI_CFG_t SPI_Configs;
 }SPI_Handle_t;
 
-
 void SPI_Init(SPI_Handle_t *pSPI_Handle);
 void SPI_DeInit(SPI_REG_t *pSPIx);
 void SPI_ClockControl(SPI_REG_t *pSPIx, uint8_t en_di_mode);
-void SPI_Data_Transmitt(SPI_REG_t *pSPIx, uint8_t *pTX_buffer, uint32_t len);
+void SPI_Data_Transmit(SPI_REG_t *pSPIx, uint8_t *pTX_buffer, uint32_t len);
 void SPI_Data_Receive(SPI_REG_t *pSPIx, uint8_t *pRX_buffer, uint32_t len);
 void SPI_IRQ_Interrupt_CFG(uint8_t IRQ_Number, uint8_t en_di_mode);
 void SPI_IRQ_Priority_CFG(uint8_t IRQ_Number, uint8_t IRQ_Priority);
 void SPI_IRQ_Handler(SPI_Handle_t *pHandle);
+void SPI_PeripheralControl(SPI_REG_t *pSPIx, uint8_t en_di_mode);
+void SPI_SSI_CFG(SPI_REG_t *pSPIx, uint8_t en_di_mode);
+
+/*
+ * SPI register flags
+ */
+#define SPI_TXE_FLAG     (1 << SPI_SR_TXE)
+#define SPI_RXNE_FLAG    (1 << SPI_SR_RXNE)
+#define SPI_BUSY_FLAG    (1 << SPI_SR_BSY)
+#define SPI_CHSIDE_FLAG  (1 << SPI_SR_CHSIDE)
+#define SPI_UDR_FLAG     (1 << SPI_SR_UDR)
+#define SPI_CRCR_FLAG    (1 << SPI_SR_CRCR)
+#define SPI_MODF_FLAG    (1 << SPI_SR_MODF)
+#define SPI_OVR_FLAG     (1 << SPI_SR_OVR)
+#define SPI_FRE_FLAG     (1 << SPI_SR_FRE)
+
+
+
+
+
+
+
+
+
+
+
 
 
 #endif /* INC_STM32F407XX_SPI_H_ */

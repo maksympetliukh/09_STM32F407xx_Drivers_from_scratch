@@ -7,6 +7,24 @@
 
 #include "stm32f407xx.h"
 
+/*****************************************************
+ * @fn            - spi_get_status_flag
+ *
+ * @brief         - This function returns SPI status flag.
+ *
+ * @param[in]     - pointer to the structure which contains SPI peripheral register base addresses.
+ * @param[in]     - Flag variable.
+ *
+ * @return        - T or F
+ *
+ * * @note        - none
+ */
+uint8_t spi_get_status_flag(SPI_REG_t *pSPIx, uint32_t flag){
+	if(pSPIx->SR & flag){
+		return FLAG_SET;
+	}
+	return FLAG_RESET;
+}
 
 /*****************************************************
  * @fn            - SPI_Init
@@ -20,6 +38,9 @@
  * * @note        - none
  */
 void SPI_Init(SPI_Handle_t *pSPI_Handle){
+
+	//Enable the peripheral clock
+	SPI_ClockControl(pSPI_Handle->pSPIx, ENABLE);
 	//Configure the CR1 register
 	uint32_t tmp = 0;
 
@@ -51,15 +72,22 @@ void SPI_Init(SPI_Handle_t *pSPI_Handle){
 	//CPHA
 	tmp |= pSPI_Handle->SPI_Configs.spi_cpha << SPI_CR1_CPHA;
 
-	pSPI_Handle->pSPIx->CR1 |= tmp;
+	//SSM
+	tmp |= pSPI_Handle->SPI_Configs.spi_ssm << SPI_CR1_SSM;
+
+	if(pSPI_Handle->SPI_Configs.spi_ssm == SPI_SSM_EN){
+		tmp |= (1 << SPI_CR1_SSI);
+	}
+
+	pSPI_Handle->pSPIx->CR1 = tmp;
 }
 
 /*****************************************************
  * @fn            - SPI_DeInit
  *
- * @brief         -
+ * @brief         - This function allows us to reset the SPI port
  *
- * @param[in]     -
+ * @param[in]     - Pointer to the structure that contains the base addresses  of the SPI port registers.
  *
  * @return        - none
  *
@@ -82,9 +110,9 @@ void SPI_DeInit(SPI_REG_t *pSPIx){
 /*****************************************************
  * @fn            - SPI_ClockControl
  *
- * @brief         -
+ * @brief         - This function allows us to enable/disable a Peripheral Clock
  *
- * @param[in]     -
+ * @param[in]     - Pointer to the structure that contains the base addresses of the SPI port registers.
  * @param[in]     - Enable/Disable mode variable
  *
  * @return        - none
@@ -116,18 +144,87 @@ void SPI_ClockControl(SPI_REG_t *pSPIx, uint8_t en_di_mode){
 }
 
 /*****************************************************
- * @fn            - GPIO_Init
+ * @fn            - SPI_PeripheralControl
  *
- * @brief         - This function initializes the GPIO port and pin according to the specified settings in the handle structure.
+ * @brief         - This function allows us to enable/disable the SPI Peripheral
  *
- * @param[in]     -
+ * @param[in]     - Pointer to the structure that contains the base addresses of the SPI port registers.
+ * @param[in]     - Enable/Disable mode variable
  *
  * @return        - none
  *
  * * @note        - none
  */
-void SPI_Data_Transmitt(SPI_REG_t *pSPIx, uint8_t *pTX_buffer, uint32_t len){
+void SPI_PeripheralControl(SPI_REG_t *pSPIx, uint8_t en_di_mode){
+	if(en_di_mode == ENABLE){
+		pSPIx->CR1 |= (1 << SPI_CR1_SPE);
+	}else{
+		pSPIx->CR1 &= ~(1 << SPI_CR1_SPE);
+	}
+}
 
+/*****************************************************
+ * @fn            - SPI_SSI_CFG
+ *
+ * @brief         - This function enables the SSI
+ *
+ * @param[in]     - Pointer to the structure that contains the base addresses of the SPI port registers.
+ * @param[in]     - Enable/Disable mode variable
+ *
+ * @return        - none
+ *
+ * * @note        - none
+ */
+void SPI_SSI_CFG(SPI_REG_t *pSPIx, uint8_t en_di_mode){
+	if(en_di_mode == ENABLE){
+		pSPIx->CR1 |= (1 << SPI_CR1_SSI);
+	}else{
+		pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);
+	}
+}
+/*****************************************************
+ * @fn            - SPI_Data_Transmit
+ *
+ * @brief         - This function sends data into the Data Register
+ *
+ * @param[in]     - Pointer to the base addresses of the SPI's port registers.
+ * @param[in]     - Pointer to the data which we want to send.
+ * @param[in]     - Length of the data that we want to send.
+ * @return        - none
+ *
+ * * @note        - This is a blocking call
+ */
+void SPI_Data_Transmit(SPI_REG_t *pSPIx, uint8_t *pTX_buffer, uint32_t len){
+	while(len > 0){
+		//Wait until TXE is set
+		while(spi_get_status_flag(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
+
+		//Check the DFF bit in CR1
+		if(pSPIx->CR1 & (1 << SPI_CR1_DFF)){
+			//16 bit DFF
+
+			//Load the data into the DR
+			pSPIx->DR = *((uint16_t*)pTX_buffer);
+
+			//2 times because we took 2 bites (16 bits) of data
+			len--;
+			len--;
+
+			//Increment the data pointer
+			(uint16_t*)pTX_buffer++;
+
+		}else{
+			//8 bit DFF
+
+			//Load the data into the DR
+			pSPIx->DR = *pTX_buffer;
+
+			len--;
+
+			pTX_buffer++;
+		}
+
+	}
 }
 
 /*****************************************************

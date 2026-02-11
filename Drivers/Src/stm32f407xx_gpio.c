@@ -20,6 +20,10 @@
  * * @note        - none
  */
 void GPIO_Init(GPIO_Handle_t *pGPIO_Handle){
+
+	//Enable the peripheral clock
+	GPIO_ClockControl(pGPIO_Handle->pGPIOx, ENABLE);
+
 	uint32_t tmp = 0;//temporary register
 	//GPIO pin mode configuration
 	if(pGPIO_Handle->GPIOx_CFG.pin_mode <= GPIO_MODE_ANALOG){ //non-interrupt mode

@@ -538,5 +538,7 @@ typedef struct{
 #define RESET           0
 #define PRESSED         0
 #define RELEASED        1
+#define FLAG_RESET      RESET
+#define FLAG_SET        SET
 
 #endif /* INC_STM32F407XX_H_ */
